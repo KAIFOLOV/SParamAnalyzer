@@ -28,5 +28,23 @@ Window {
             width: 200
             onClicked: vna.sendCommand("*IDN?")
         }
+
+        Button {
+            text: "CALCulate?"
+            width: 200
+            onClicked: vna.sendCommand("CALC:DATA:FDAT?")
+        }
+
+        Button {
+            text: "Format"
+            width: 200
+            onClicked: vna.sendCommand("CALCulate1:TRACe1:FORMat PHASe")
+        }
+
+        Button {
+            text: "System error?"
+            width: 200
+            onClicked: vna.sendCommand("SYST:ERR?")
+        }
     }
 }
