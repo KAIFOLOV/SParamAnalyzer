@@ -18,7 +18,7 @@ qt_add_qml_module(appSParamAnalyzer
     QML_FILES
         Main.qml
         SOURCES IVna.h
-        SOURCES vna.h vna.cpp
+        SOURCES tcp_vna.h tcp_vna.cpp
 )
 
 target_link_libraries(appSParamAnalyzer

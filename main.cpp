@@ -1,4 +1,4 @@
-#include "vna.h"
+#include "tcp_vna.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
