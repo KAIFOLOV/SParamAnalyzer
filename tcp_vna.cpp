@@ -7,7 +7,7 @@ TcpVna::TcpVna() : _socket(new QTcpSocket(this))
 {
     QObject::connect(_socket, &QTcpSocket::readyRead, this, &TcpVna::onReadyRead);
     QObject::connect(_socket, &QTcpSocket::errorOccurred, this, &TcpVna::onError);
-    connect(_socket, &QTcpSocket::stateChanged, this, &AbstractTCPDevice::statusChange);
+    QObject::connect(_socket, &QTcpSocket::stateChanged, this, &TcpVna::statusChanged);
 
     QObject::connect(this, &TcpVna::sendToSocket, this, &TcpVna::write, Qt::QueuedConnection);
 }
@@ -92,13 +92,16 @@ void TcpVna::write(const QByteArray &command)
 {
     qInfo() << "TCP Device send: " << QString::fromUtf8(command);
 
+    QByteArray cmd = command;
+    cmd.append('\n');
+
     if (!isOpen()) {
-        // emit connectStatusChanged(DeviceConnect::Status::Closed);
+        emit connectStatusChanged(Status::Closed);
         // emit errorMessage(QString(tr("Не удалось отправить команду. Устройство не подключено")));
         return;
     }
 
-    qint64 bytesWritten = _socket->write(command.data());
+    qint64 bytesWritten = _socket->write(cmd);
 
     if (bytesWritten != command.size()) {
         // emit errorMessage(tr("Ошибка отправки сообщения, записано %1 из %2 байт")
@@ -118,18 +121,18 @@ void TcpVna::write(const QByteArray &command)
     }
 }
 
-void TcpVna::statusChange(QAbstractSocket::SocketState state)
+void TcpVna::statusChanged(QAbstractSocket::SocketState state)
 {
     switch (state) {
     case QAbstractSocket::ConnectedState: {
-        emit connectStatusChanged(DeviceConnect::Status::Opened);
+        emit connectStatusChanged(Status::Opened);
     } break;
     case QAbstractSocket::ConnectingState:
     case QAbstractSocket::HostLookupState: {
-        emit connectStatusChanged(DeviceConnect::Status::Wait);
+        emit connectStatusChanged(Status::Wait);
     } break;
     case QAbstractSocket::UnconnectedState: {
-        emit connectStatusChanged(DeviceConnect::Status::Closed);
+        emit connectStatusChanged(Status::Closed);
     } break;
     default:
         break;
@@ -141,8 +144,161 @@ bool TcpVna::isOpen() const
     return _socket->state() == QTcpSocket::ConnectedState;
 }
 
+bool TcpVna::OPC()
+{
+    QString command = "*OPC?";
+    QByteArray response;
+
+    query(command.toUtf8(), response);
+
+    if (response.contains("1"))
+        return true;
+
+    return false;
+}
+
+QString TcpVna::IDN()
+{
+    QString command = "*IDN?";
+    QByteArray response;
+
+    query(command.toUtf8(), response);
+
+    return QString::fromUtf8(response).trimmed();
+}
+
+bool TcpVna::systemError(QByteArray &errResponse)
+{
+    QString command = "SYST:ERR?";
+
+    query(command.toUtf8(), errResponse);
+
+    if (errResponse.contains("+0"))
+        return false;
+
+    return true;
+}
+
+void TcpVna::startMeasure()
+{
+    if (!isOpen())
+        return;
+
+    send("INITiate:IMMediate");
+}
+
+void TcpVna::switchStateContinuousStart(const bool state, const int channel)
+{
+    if (!isOpen())
+        return;
+
+    QString command = QString("INITiate%1:CONTinuous %2").arg(channel).arg(state);
+    send(command.toUtf8());
+}
+
+QVector<double> TcpVna::getData(const int channel, const int trace)
+{
+    QByteArray response;
+    QString command = QString("CALCulate%1:TRACe%2:FORMat PHASe").arg(channel).arg(trace);
+    query(command.toUtf8(), response);
+
+    qInfo() << QString::fromUtf8(response);
+    return {};
+}
+
+void TcpVna::setStartFreq(const double value, const int channel)
+{
+    QString command = QString("SENSe%1:FREQuency:STARt %2").arg(channel).arg(value);
+    send(command.toUtf8());
+}
+
+double TcpVna::getStartFreq(const int channel)
+{
+    QByteArray response;
+    QString command = QString("SENSe%1:FREQuency:STARt?").arg(channel);
+
+    query(command.toUtf8(), response);
+    if (!response.isEmpty())
+        return response.toDouble();
+
+    return double();
+}
+
+void TcpVna::setStopFreq(const double value, const int channel)
+{
+    QString command = QString("SENSe%1:FREQuency:STOP %2").arg(channel).arg(value);
+    send(command.toUtf8());
+}
+
+double TcpVna::getStopFreq(const int channel)
+{
+    QByteArray response;
+    QString command = QString("SENSe%1:FREQuency:STOP?").arg(channel);
+
+    query(command.toUtf8(), response);
+    if (!response.isEmpty())
+        return response.toDouble();
+
+    return double();
+}
+
+void TcpVna::setPointsCount(const int value, const int channel)
+{
+    QString command = QString("SENSe%1:SWEep:POINts %2").arg(channel).arg(value);
+    send(command.toUtf8());
+}
+
+int TcpVna::getPointsCount(const int channel)
+{
+    QByteArray response;
+    QString command = QString("SENSe%1:SWEep:POINts?").arg(channel);
+
+    query(command.toUtf8(), response);
+    if (!response.isEmpty())
+        return response.toInt();
+
+    return int();
+}
+
+void TcpVna::setOutputPower(const float power)
+{
+    QString command = QString("SOUR:POW %1").arg(power);
+    send(command.toUtf8());
+}
+
+float TcpVna::getOutputPower()
+{
+    QByteArray response;
+    QString command = QString("SOUR:POW?");
+
+    query(command.toUtf8(), response);
+    if (!response.isEmpty())
+        return response.toFloat();
+
+    return float();
+}
+
+void TcpVna::setFilterPch(const double value, const int channel)
+{
+    QString command = QString("SENSe%1:BAND %2").arg(channel).arg(value);
+    send(command.toUtf8());
+}
+
+double TcpVna::getFilterPch(const int channel)
+{
+    QByteArray response;
+    QString command = QString("SENSe:POW?");
+
+    query(command.toUtf8(), response);
+    if (!response.isEmpty())
+        return response.toDouble();
+
+    return double();
+}
+
 void TcpVna::onReadyRead()
 {
+    qInfo() << "onReadyRead";
     _buffer = _socket->readAll();
     emit commandRecived();
 }

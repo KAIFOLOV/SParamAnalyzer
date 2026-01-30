@@ -14,15 +14,37 @@ public:
     explicit TcpVna();
     ~TcpVna();
 
-    Q_SIGNAL void connectStatusChanged();
-
     void connect() override;
     void disconnect() override;
 
-    virtual bool send(const QByteArray &command) override;
-    virtual bool query(const QByteArray &command, QByteArray &result) override;
+    bool send(const QByteArray &command) override;
+    bool query(const QByteArray &command, QByteArray &result) override;
 
     bool isOpen() const override;
+
+    bool OPC() override;
+    QString IDN() override;
+    bool systemError(QByteArray &errResponse) override;
+
+    void startMeasure() override;
+    void switchStateContinuousStart(const bool state, const int channel = 1) override;
+
+    QVector<double> getData(const int channel = 1, const int trace = 1) override;
+
+    void setStartFreq(const double value, const int channel = 1) override;
+    double getStartFreq(const int channel = 1) override;
+
+    void setStopFreq(const double value, const int channel = 1) override;
+    double getStopFreq(const int channel = 1) override;
+
+    void setPointsCount(const int value, const int channel = 1) override;
+    int getPointsCount(const int channel = 1) override;
+
+    void setOutputPower(const float power) override;
+    float getOutputPower() override;
+
+    void setFilterPch(const double value, const int channel = 1) override;
+    double getFilterPch(const int channel = 1) override;
 
 private:
     Q_SIGNAL void sendToSocket(const QByteArray &command);
@@ -31,7 +53,7 @@ private:
     Q_SLOT void onReadyRead();
     Q_SLOT void write(const QByteArray &command);
     Q_SLOT void onError(QAbstractSocket::SocketError);
-    Q_SLOT void statusChange(QAbstractSocket::SocketState state);
+    Q_SLOT void statusChanged(QAbstractSocket::SocketState state);
 
 private:
     QString _ip {};

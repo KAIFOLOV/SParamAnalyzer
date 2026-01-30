@@ -1,19 +1,22 @@
 #include "tcp_vna.h"
+#include "debug_controller.h"
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-    Vna *vna = new Vna();
+    IVna *vna = new TcpVna();
+
+    DebugController debugCtrl(vna);
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("vna", vna);
+    engine.rootContext()->setContextProperty("debugController", &debugCtrl);
 
-    const QUrl url(QStringLiteral("qrc:/SParamAnalyzer/Main.qml"));
+    const QUrl url(QStringLiteral("qrc:/qml/Main.qml"));
     QObject::connect(
      &engine, &QQmlApplicationEngine::objectCreationFailed, &app,
      []() {

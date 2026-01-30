@@ -4,25 +4,23 @@ project(SParamAnalyzer VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.4 REQUIRED COMPONENTS Quick)
+find_package(Qt6 6.4 REQUIRED COMPONENTS Quick Widgets)
 
 qt_standard_project_setup()
 
+qt_add_resources(QML_RESOURCES qml/qml.qrc)
+
 qt_add_executable(appSParamAnalyzer
     main.cpp
-)
-
-qt_add_qml_module(appSParamAnalyzer
-    URI SParamAnalyzer
-    VERSION 1.0
-    QML_FILES
-        Main.qml
-        SOURCES IVna.h
-        SOURCES tcp_vna.h tcp_vna.cpp
+    IVna.h
+    tcp_vna.h tcp_vna.cpp
+    debug_menu.h debug_menu.cpp
+    debug_controller.h debug_controller.cpp
+    ${QML_RESOURCES}
 )
 
 target_link_libraries(appSParamAnalyzer
-    PRIVATE Qt6::Quick
+    PRIVATE Qt6::Quick Qt6::Widgets
 )
 
 include(GNUInstallDirs)
