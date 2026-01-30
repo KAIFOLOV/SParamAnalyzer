@@ -60,7 +60,6 @@ bool TcpVna::send(const QByteArray &command)
 
 bool TcpVna::query(const QByteArray &command, QByteArray &result)
 {
-    QMutexLocker lock(&_mutex);
     _buffer.clear();
 
     QEventLoop loop;
@@ -196,10 +195,15 @@ void TcpVna::switchStateContinuousStart(const bool state, const int channel)
     send(command.toUtf8());
 }
 
+void TcpVna::setFormat(const QString &format, const int channel, const int trace)
+{
+    QString command = QString("CALCulate%1:TRACe%2:FORMat %3").arg(channel).arg(trace).arg(format);
+}
+
 QVector<double> TcpVna::getData(const int channel, const int trace)
 {
     QByteArray response;
-    QString command = QString("CALCulate%1:TRACe%2:FORMat PHASe").arg(channel).arg(trace);
+    QString command = QString("CALCulate%1:TRACe%2:DATA:FDATa?").arg(channel).arg(trace);
     query(command.toUtf8(), response);
 
     qInfo() << QString::fromUtf8(response);

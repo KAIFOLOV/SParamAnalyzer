@@ -34,6 +34,7 @@ public:
     virtual void startMeasure() = 0;
     virtual void switchStateContinuousStart(const bool state, const int channel = 1) = 0;
 
+    virtual void setFormat(const QString &format, const int channel = 1, const int trace = 1) = 0;
     virtual QVector<double> getData(const int channel = 1, const int trace = 1) = 0;
 
     virtual void setStartFreq(const double value, const int channel = 1) = 0;

@@ -29,6 +29,7 @@ public:
     void startMeasure() override;
     void switchStateContinuousStart(const bool state, const int channel = 1) override;
 
+    void setFormat(const QString &format, const int channel = 1, const int trace = 1) override;
     QVector<double> getData(const int channel = 1, const int trace = 1) override;
 
     void setStartFreq(const double value, const int channel = 1) override;
