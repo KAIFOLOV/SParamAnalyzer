@@ -1,5 +1,5 @@
 #include "tcp_vna.h"
-#include "debug_controller.h"
+#include "debug/debug_controller.h"
 
 #include <QApplication>
 #include <QQmlApplicationEngine>

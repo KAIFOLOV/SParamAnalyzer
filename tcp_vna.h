@@ -57,8 +57,8 @@ private:
     Q_SLOT void statusChanged(QAbstractSocket::SocketState state);
 
 private:
-    QString _ip {};
-    int _port { 0 };
+    QString _ip { "127.0.0.1" };
+    int _port { 5025 };
 
     /// мс
     int _timeout { 5000 };

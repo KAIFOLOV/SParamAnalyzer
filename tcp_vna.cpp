@@ -20,17 +20,17 @@ TcpVna::~TcpVna()
 void TcpVna::connect()
 {
     if (isOpen()) {
-        // emit connectStatusChanged(DeviceConnect::Status::Opened);
+        emit connectStatusChanged(Status::Opened);
         return;
     }
-    _socket->connectToHost("127.0.0.1", 5025);
+    _socket->connectToHost(_ip, _port);
 
     if (!_socket->waitForConnected()) {
         // emit errorMessage(tr("Failed to connect to server"));
         return;
     }
 
-    // emit connectStatusChanged(DeviceConnect::Status::Opened);
+    emit connectStatusChanged(Status::Opened);
 }
 
 void TcpVna::disconnect()
@@ -42,7 +42,7 @@ void TcpVna::disconnect()
         }
     }
 
-    // emit connectStatusChanged(DeviceConnect::Status::Closed);
+    emit connectStatusChanged(Status::Closed);
 }
 
 bool TcpVna::send(const QByteArray &command)
@@ -52,6 +52,12 @@ bool TcpVna::send(const QByteArray &command)
         emit sendToSocket(command);
     } catch (const std::exception &e) {
         // emit errorMessage(e.what());
+        return false;
+    }
+
+    QByteArray err;
+    if (systemError(err)) {
+        qWarning() << "SCPI error after send:" << command << "Error:" << err;
         return false;
     }
 
@@ -200,14 +206,27 @@ void TcpVna::setFormat(const QString &format, const int channel, const int trace
     QString command = QString("CALCulate%1:TRACe%2:FORMat %3").arg(channel).arg(trace).arg(format);
 }
 
-QVector<double> TcpVna::getData(const int channel, const int trace)
+QVector<double> TcpVna::getData(int channel, int trace)
 {
     QByteArray response;
     QString command = QString("CALCulate%1:TRACe%2:DATA:FDATa?").arg(channel).arg(trace);
-    query(command.toUtf8(), response);
 
-    qInfo() << QString::fromUtf8(response);
-    return {};
+    if (!query(command.toUtf8(), response))
+        return {};
+
+    QList<QByteArray> parts = response.trimmed().split(',');
+
+    QVector<double> result;
+    result.reserve(parts.size() / 2);
+
+    for (int i = 0; i < parts.size(); i += 2) {
+        bool ok = false;
+        double v = parts[i].toDouble(&ok);
+        if (ok)
+            result.push_back(v);
+    }
+
+    return result;
 }
 
 void TcpVna::setStartFreq(const double value, const int channel)

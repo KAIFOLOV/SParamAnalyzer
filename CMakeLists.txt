@@ -14,9 +14,10 @@ qt_add_executable(appSParamAnalyzer
     main.cpp
     IVna.h
     tcp_vna.h tcp_vna.cpp
-    debug_menu.h debug_menu.cpp
-    debug_controller.h debug_controller.cpp
+    debug/debug_menu.h debug/debug_menu.cpp
+    debug/debug_controller.h debug/debug_controller.cpp
     ${QML_RESOURCES}
+    s_param_measurement.h s_param_measurement.cpp
 )
 
 target_link_libraries(appSParamAnalyzer

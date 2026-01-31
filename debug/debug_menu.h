@@ -1,7 +1,7 @@
 #ifndef DEBUG_MENU_H
 #define DEBUG_MENU_H
 
-#include "IVna.h"
+#include "../IVna.h"
 
 #include <QLabel>
 #include <QWidget>

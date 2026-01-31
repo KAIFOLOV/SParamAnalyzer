@@ -17,8 +17,8 @@ public:
 
     virtual ~IVna() = default;
 
-    Q_INVOKABLE virtual void connect() = 0;
-    Q_INVOKABLE virtual void disconnect() = 0;
+    virtual void connect() = 0;
+    virtual void disconnect() = 0;
 
     Q_SIGNAL void connectStatusChanged(const Status status);
 

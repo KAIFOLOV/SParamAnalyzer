@@ -1,7 +1,7 @@
 #ifndef DEBUG_CONTROLLER_H
 #define DEBUG_CONTROLLER_H
 
-#include "IVna.h"
+#include "../IVna.h"
 #include "debug_menu.h"
 
 #include <QObject>
