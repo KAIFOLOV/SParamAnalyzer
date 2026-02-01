@@ -1,4 +1,5 @@
 #include "tcp_vna.h"
+#include "curve_model.h"
 #include "debug/debug_controller.h"
 
 #include <QApplication>
@@ -11,10 +12,14 @@ int main(int argc, char *argv[])
 
     IVna *vna = new TcpVna();
 
-    DebugController debugCtrl(vna);
+    CurveModel *model = new CurveModel();
+    QVector<QPointF> data = { { 1, 0 }, { 2, 1 }, { 5, 5 } };
+    model->addCurve(std::make_unique<Curve>(0, "test", data));
+    DebugController debugCtrl(vna, model);
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("debugController", &debugCtrl);
+    engine.rootContext()->setContextProperty("curveModel", model);
 
     const QUrl url(QStringLiteral("qrc:/qml/Main.qml"));
     QObject::connect(
