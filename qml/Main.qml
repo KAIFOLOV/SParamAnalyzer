@@ -42,14 +42,14 @@ Window {
                 id: axisX
                 min: 0
                 max: 1
-                titleText: "Db"
+                titleText: "Hz"
             }
 
             ValueAxis {
                 id: axisY
                 min: 0
                 max: 1
-                titleText: "Hz"
+                titleText: "Db"
             }
 
             // --- Пересчёт диапазонов осей ---

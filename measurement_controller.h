@@ -16,7 +16,7 @@ public:
     explicit MeasurementController(IVna *vna, QObject *parent = nullptr);
 
     Q_SIGNAL void startManualTimer();
-    Q_SIGNAL void newDataReady(const QVector<QPointF> &data);
+    Q_SIGNAL void newDataReady(const QVector<QPointF> &data, uint32_t id = 0);
 
     Q_INVOKABLE void start();
     Q_INVOKABLE void stop();

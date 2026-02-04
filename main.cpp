@@ -17,17 +17,12 @@ int main(int argc, char *argv[])
     CurveModel *model = new CurveModel();
     MeasurementController *controller = new MeasurementController(vna);
 
-    QVector<QPointF> data = { { 1, 1 }, { 5, 5 } };
-    model->addDataToCurve(data);
-
-    QObject::connect(controller, &MeasurementController::newDataReady,
-                     [model](const QVector<QPointF> &data) {
-                         model->addDataToCurve(data);
-                     });
+    QObject::connect(controller, &MeasurementController::newDataReady, model,
+                     &CurveModel::addDataToCurve);
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("curveModel", model);
     engine.rootContext()->setContextProperty("debugController", &debugCtrl);
+    engine.rootContext()->setContextProperty("curveModel", model);
     engine.rootContext()->setContextProperty("measurementController", controller);
 
     const QUrl url(QStringLiteral("qrc:/qml/Main.qml"));
