@@ -4,7 +4,7 @@ project(SParamAnalyzer VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 6.4 REQUIRED COMPONENTS Quick Widgets Charts)
+find_package(Qt6 6.4 REQUIRED COMPONENTS Quick Widgets Charts Concurrent)
 
 qt_standard_project_setup()
 
@@ -20,10 +20,12 @@ qt_add_executable(appSParamAnalyzer
     s_param_measurement.h s_param_measurement.cpp
     curve.h curve.cpp
     curve_model.h curve_model.cpp
+    measurement_controller.h measurement_controller.cpp
+    common.h
 )
 
 target_link_libraries(appSParamAnalyzer
-    PRIVATE Qt6::Quick Qt6::Widgets Qt6::Charts
+    PRIVATE Qt6::Quick Qt6::Widgets Qt6::Charts Qt6::Concurrent
 )
 
 include(GNUInstallDirs)

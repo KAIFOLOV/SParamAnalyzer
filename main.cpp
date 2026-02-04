@@ -1,25 +1,34 @@
 #include "tcp_vna.h"
 #include "curve_model.h"
+#include "measurement_controller.h"
 #include "debug/debug_controller.h"
 
+#include <QQmlContext>
 #include <QApplication>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     IVna *vna = new TcpVna();
+    DebugController debugCtrl(vna);
 
     CurveModel *model = new CurveModel();
-    QVector<QPointF> data = { { 1, 0 }, { 2, 1 }, { 5, 5 } };
-    model->addCurve(std::make_unique<Curve>(0, "test", data));
-    DebugController debugCtrl(vna, model);
+    MeasurementController *controller = new MeasurementController(vna);
+
+    QVector<QPointF> data = { { 1, 1 }, { 5, 5 } };
+    model->addDataToCurve(data);
+
+    QObject::connect(controller, &MeasurementController::newDataReady,
+                     [model](const QVector<QPointF> &data) {
+                         model->addDataToCurve(data);
+                     });
 
     QQmlApplicationEngine engine;
-    engine.rootContext()->setContextProperty("debugController", &debugCtrl);
     engine.rootContext()->setContextProperty("curveModel", model);
+    engine.rootContext()->setContextProperty("debugController", &debugCtrl);
+    engine.rootContext()->setContextProperty("measurementController", controller);
 
     const QUrl url(QStringLiteral("qrc:/qml/Main.qml"));
     QObject::connect(

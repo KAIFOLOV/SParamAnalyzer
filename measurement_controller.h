@@ -1,0 +1,40 @@
+#ifndef MEASUREMENT_CONTROLLER_H
+#define MEASUREMENT_CONTROLLER_H
+
+#include "s_param_measurement.h"
+
+#include <QObject>
+#include <QTimer>
+
+class MeasurementController : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(bool isRunning READ isRunning WRITE setIsRunning NOTIFY isRunningChanged)
+
+public:
+    explicit MeasurementController(IVna *vna, QObject *parent = nullptr);
+
+    Q_SIGNAL void startManualTimer();
+    Q_SIGNAL void newDataReady(const QVector<QPointF> &data);
+
+    Q_INVOKABLE void start();
+    Q_INVOKABLE void stop();
+
+    bool isRunning() const;
+    void setIsRunning(bool newIsRunning);
+
+signals:
+    void isRunningChanged();
+
+private:
+    void fetchData();
+
+private:
+    bool _isRunning;
+    QTimer _continuousModeTimer;
+
+    std::unique_ptr<SParamMeasurement> _measurement;
+};
+
+#endif // MEASUREMENT_CONTROLLER_H

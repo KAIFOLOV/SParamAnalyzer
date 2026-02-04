@@ -178,7 +178,7 @@ bool TcpVna::systemError(QByteArray &errResponse)
 
     query(command.toUtf8(), errResponse);
 
-    if (errResponse.contains("+0"))
+    if (errResponse.contains("0"))
         return false;
 
     return true;

@@ -1,5 +1,7 @@
 #include "s_param_measurement.h"
 
+#include "common.h"
+
 SParamMeasurement::SParamMeasurement(IVna *vna) : _vna(vna)
 {}
 
@@ -10,12 +12,21 @@ void SParamMeasurement::preparation()
     _vna->setPointsCount(_pointsCount);
     _vna->setFilterPch(_filterPch);
     _vna->setOutputPower(_outputPower);
+    _vna->setFormat(_format);
+    _vna->switchStateContinuousStart(true);
 }
 
 QVector<QPointF> SParamMeasurement::startMeasure()
 {
-    _vna->setOutputPower(_outputPower);
-    return {};
+    const auto data = _vna->getData();
+    const auto formattedData = makeChartFromFormatted(data, _startFreq, _stopFreq);
+
+    return formattedData;
+}
+
+void SParamMeasurement::stop()
+{
+    _vna->switchStateContinuousStart(false);
 }
 
 double SParamMeasurement::startFreq() const

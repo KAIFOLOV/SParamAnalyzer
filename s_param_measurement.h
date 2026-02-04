@@ -21,6 +21,7 @@ public:
 
     void preparation();
     QVector<QPointF> startMeasure();
+    void stop();
 
     double startFreq() const;
     void setStartFreq(double newStartFreq);

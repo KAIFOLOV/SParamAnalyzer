@@ -3,11 +3,12 @@
 
 #include <QObject>
 #include <QPointF>
+#include <qqmlintegration.h>
 
 class Curve : public QObject
 {
     Q_OBJECT
-
+    QML_ELEMENT
     Q_PROPERTY(uint32_t id READ id)
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
     Q_PROPERTY(QVector<QPointF> data READ data WRITE setData NOTIFY dataChanged)

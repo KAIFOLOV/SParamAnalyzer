@@ -21,7 +21,7 @@ public:
 
     void removeCurve(uint32_t index);
     void addCurve(std::unique_ptr<Curve> curve) noexcept;
-    void addDataToCurve(const QVector<QPointF> &data, uint32_t id);
+    void addDataToCurve(const QVector<QPointF> &data, uint32_t id = 0);
 
 private:
     std::vector<std::unique_ptr<Curve>> _curves;

@@ -75,4 +75,11 @@ void CurveModel::addDataToCurve(const QVector<QPointF> &data, uint32_t id)
             return;
         }
     }
+
+    auto name = QString("Track ").append(QString::number(id));
+    auto curve = std::make_unique<Curve>(id, name, std::move(data));
+
+    addCurve(std::move(curve));
+
+    emit dataChanged(QModelIndex(), QModelIndex(), {});
 }
