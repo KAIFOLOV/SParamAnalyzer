@@ -47,6 +47,9 @@ void TcpVna::disconnect()
 
 bool TcpVna::send(const QByteArray &command)
 {
+    if (!isOpen())
+        return false;
+
     try {
         QMutexLocker lock(&_mutex);
         emit sendToSocket(command);
@@ -66,6 +69,9 @@ bool TcpVna::send(const QByteArray &command)
 
 bool TcpVna::query(const QByteArray &command, QByteArray &result)
 {
+    if (!isOpen())
+        return false;
+
     _buffer.clear();
 
     QEventLoop loop;

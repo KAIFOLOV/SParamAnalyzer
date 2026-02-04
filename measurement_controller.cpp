@@ -49,16 +49,26 @@ void MeasurementController::start()
     // connect(workerThread, &QThread::finished, workerThread, &QObject::deleteLater);
     // workerThread->start();
 
+    if (_isRunning)
+        return;
+
     longOperation([this]() {
         _measurement->preparation();
         emit startManualTimer();
     });
+
+    setIsRunning(true);
 }
 
 void MeasurementController::stop()
 {
+    if (!_isRunning)
+        return;
+
     _measurement->stop();
     _continuousModeTimer.stop();
+
+    setIsRunning(false);
 }
 
 void MeasurementController::fetchData()
