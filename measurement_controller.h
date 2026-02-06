@@ -10,7 +10,8 @@ class MeasurementController : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool isRunning READ isRunning WRITE setIsRunning NOTIFY isRunningChanged)
+    Q_PROPERTY(bool isRunning READ isRunning WRITE setIsRunning NOTIFY isRunningChanged FINAL)
+    Q_PROPERTY(SParamMeasurement *measurement READ measurement NOTIFY measurementChanged FINAL)
 
 public:
     explicit MeasurementController(IVna *vna, QObject *parent = nullptr);
@@ -24,8 +25,13 @@ public:
     bool isRunning() const;
     void setIsRunning(bool newIsRunning);
 
+    SParamMeasurement *measurement() const;
+    void setMeasurement(std::unique_ptr<SParamMeasurement> newMeasurement);
+
 signals:
     void isRunningChanged();
+
+    void measurementChanged();
 
 private:
     void fetchData();

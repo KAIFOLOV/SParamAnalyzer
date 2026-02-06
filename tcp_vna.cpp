@@ -209,11 +209,18 @@ void TcpVna::switchStateContinuousStart(const bool state, const int channel)
 
 void TcpVna::setFormat(const QString &format, const int channel, const int trace)
 {
+    if (!isOpen())
+        return;
+
     QString command = QString("CALCulate%1:TRACe%2:FORMat %3").arg(channel).arg(trace).arg(format);
+    send(command.toUtf8());
 }
 
 QVector<double> TcpVna::getData(int channel, int trace)
 {
+    if (!isOpen())
+        return {};
+
     QByteArray response;
     QString command = QString("CALCulate%1:TRACe%2:DATA:FDATa?").arg(channel).arg(trace);
 
@@ -237,12 +244,18 @@ QVector<double> TcpVna::getData(int channel, int trace)
 
 void TcpVna::setStartFreq(const double value, const int channel)
 {
+    if (!isOpen())
+        return;
+
     QString command = QString("SENSe%1:FREQuency:STARt %2").arg(channel).arg(value);
     send(command.toUtf8());
 }
 
 double TcpVna::getStartFreq(const int channel)
 {
+    if (!isOpen())
+        return 0.0;
+
     QByteArray response;
     QString command = QString("SENSe%1:FREQuency:STARt?").arg(channel);
 
@@ -255,12 +268,18 @@ double TcpVna::getStartFreq(const int channel)
 
 void TcpVna::setStopFreq(const double value, const int channel)
 {
+    if (!isOpen())
+        return;
+
     QString command = QString("SENSe%1:FREQuency:STOP %2").arg(channel).arg(value);
     send(command.toUtf8());
 }
 
 double TcpVna::getStopFreq(const int channel)
 {
+    if (!isOpen())
+        return 0.0;
+
     QByteArray response;
     QString command = QString("SENSe%1:FREQuency:STOP?").arg(channel);
 
@@ -273,12 +292,18 @@ double TcpVna::getStopFreq(const int channel)
 
 void TcpVna::setPointsCount(const int value, const int channel)
 {
+    if (!isOpen())
+        return;
+
     QString command = QString("SENSe%1:SWEep:POINts %2").arg(channel).arg(value);
     send(command.toUtf8());
 }
 
 int TcpVna::getPointsCount(const int channel)
 {
+    if (!isOpen())
+        return 0;
+
     QByteArray response;
     QString command = QString("SENSe%1:SWEep:POINts?").arg(channel);
 
@@ -291,12 +316,18 @@ int TcpVna::getPointsCount(const int channel)
 
 void TcpVna::setOutputPower(const float power)
 {
+    if (!isOpen())
+        return;
+
     QString command = QString("SOUR:POW %1").arg(power);
     send(command.toUtf8());
 }
 
 float TcpVna::getOutputPower()
 {
+    if (!isOpen())
+        return 0.0;
+
     QByteArray response;
     QString command = QString("SOUR:POW?");
 
@@ -304,17 +335,23 @@ float TcpVna::getOutputPower()
     if (!response.isEmpty())
         return response.toFloat();
 
-    return float();
+    return 0.0;
 }
 
 void TcpVna::setFilterPch(const double value, const int channel)
 {
+    if (!isOpen())
+        return;
+
     QString command = QString("SENSe%1:BAND %2").arg(channel).arg(value);
     send(command.toUtf8());
 }
 
 double TcpVna::getFilterPch(const int channel)
 {
+    if (!isOpen())
+        return 0.0;
+
     QByteArray response;
     QString command = QString("SENSe:POW?");
 
@@ -327,12 +364,11 @@ double TcpVna::getFilterPch(const int channel)
 
 void TcpVna::onReadyRead()
 {
-    qInfo() << "onReadyRead";
     _buffer = _socket->readAll();
     emit commandRecived();
 }
 
 void TcpVna::onError(QAbstractSocket::SocketError)
 {
-    qInfo() << _socket->errorString();
+    qWarning() << _socket->errorString();
 }

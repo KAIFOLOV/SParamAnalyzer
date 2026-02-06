@@ -22,6 +22,7 @@ qt_add_executable(appSParamAnalyzer
     curve_model.h curve_model.cpp
     measurement_controller.h measurement_controller.cpp
     common.h
+    app.h app.cpp
 )
 
 target_link_libraries(appSParamAnalyzer

@@ -37,18 +37,6 @@ MeasurementController::MeasurementController(IVna *vna, QObject *parent) :
 
 void MeasurementController::start()
 {
-    // QThread *workerThread = QThread::create([this]() {
-    //     try {
-    //         _measurement->preparation();
-    //         emit startManualTimer();
-    //     } catch (const std::runtime_error &e) {
-    //         qWarning() << e.what();
-    //     }
-    // });
-
-    // connect(workerThread, &QThread::finished, workerThread, &QObject::deleteLater);
-    // workerThread->start();
-
     if (_isRunning)
         return;
 
@@ -91,4 +79,18 @@ void MeasurementController::setIsRunning(bool newIsRunning)
 
     _isRunning = newIsRunning;
     emit isRunningChanged();
+}
+
+SParamMeasurement *MeasurementController::measurement() const
+{
+    return _measurement.get();
+}
+
+void MeasurementController::setMeasurement(std::unique_ptr<SParamMeasurement> newMeasurement)
+{
+    if (_measurement.get() == newMeasurement.get())
+        return;
+
+    _measurement = std::move(newMeasurement);
+    emit measurementChanged();
 }

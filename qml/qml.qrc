@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/qml">
         <file>Main.qml</file>
+        <file>MeasurementMenu.qml</file>
+        <file>Plotter.qml</file>
     </qresource>
 </RCC>
