@@ -4,179 +4,244 @@ import QtCharts
 import QtQuick.Layouts
 
 GroupBox {
-    title: qsTr("Measurements settings")
+    title: qsTr("Measurements Settings")
     implicitWidth: parent.width
 
     readonly property real mhz: 1e6
-
     property var _measurement: measurementController ? measurementController.measurement : null
 
+    readonly property int labelWidth: 120
+    readonly property int fieldWidth: 60
+
     ColumnLayout {
-        spacing: 8
+        spacing: 12
         width: parent.width
 
         Label {
-            text: qsTr("Frequency MHz")
-            Layout.alignment: Qt.AlignLeft
+            text: qsTr("Frequency (MHz)")
         }
 
         RowLayout {
-            Layout.preferredWidth: parent.width
+            Layout.fillWidth: true
+            spacing: 16
 
+            RowLayout {
+                spacing: 8
+                Layout.alignment: Qt.AlignLeft
 
-            Label {
-                text: qsTr("From")
-            }
-            TextField {
-                id: startFrequency
-
-                property real displayStartFreq: _measurement ? _measurement.startFreq / mhz : 0
-
-                text: displayStartFreq.toLocaleString(Qt.locale(), 'f', 2)
-                validator: DoubleValidator {
-                    bottom: 0
-                    top: 1000000
-                    decimals: 6
-                    notation: DoubleValidator.StandardNotation
+                Label {
+                    text: qsTr("From:")
+                    width: labelWidth
+                    horizontalAlignment: Text.AlignRight
+                    verticalAlignment: Text.AlignVCenter
                 }
-                onEditingFinished: {
-                    var value = parseFloat(text.replace(",", "."))
-                    if (!isNaN(value) && value >= 0) {
-                        _measurement.startFreq = value * mhz
-                    } else {
-                        text = displayStartFreq.toLocaleString(Qt.locale(), 'f', 2)
+
+                TextField {
+                    id: startFrequency
+
+                    implicitWidth: fieldWidth
+                    text: (_measurement ? _measurement.startFreq / mhz : 0).toLocaleString(Qt.locale(), 'f', 2)
+                    validator: DoubleValidator {
+                        bottom: 0; top: 1000000; decimals: 6
+                    }
+                    onEditingFinished: {
+                        var value = parseFloat(text.replace(",", "."))
+                        if (!isNaN(value) && value >= 0) {
+                            _measurement.startFreq = value * mhz
+                        } else {
+                            text = (_measurement ? _measurement.startFreq / mhz : 0).toLocaleString(Qt.locale(), 'f', 2)
+                        }
                     }
                 }
             }
 
-            Label {
-                text: qsTr("To")
-            }
-            TextField {
-                id: endFrequency
+            RowLayout {
+                spacing: 8
+                Layout.alignment: Qt.AlignLeft
 
-                property real displayStopFreq: _measurement ? _measurement.stopFreq / mhz : 0
-
-                text: displayStopFreq.toLocaleString(Qt.locale(), 'f', 2)
-                validator: DoubleValidator {
-                    bottom: 0
-                    top: 1000000
-                    decimals: 6
-                    notation: DoubleValidator.StandardNotation
+                Label {
+                    text: qsTr("To:")
+                    width: labelWidth
+                    horizontalAlignment: Text.AlignRight
+                    verticalAlignment: Text.AlignVCenter
                 }
-                onEditingFinished: {
-                    var value = parseFloat(text.replace(",", "."))
-                    if (!isNaN(value) && value >= 0) {
-                        _measurement.stopFreq = value * mhz
-                    } else {
-                        text = displayStopFreq.toLocaleString(Qt.locale(), 'f', 2)
+
+                TextField {
+                    id: endFrequency
+
+                    implicitWidth: fieldWidth
+                    text: (_measurement ? _measurement.stopFreq / mhz : 0).toLocaleString(Qt.locale(), 'f', 2)
+                    validator: DoubleValidator {
+                        bottom: 0; top: 1000000; decimals: 6
                     }
-                }
-            }
-        }
-
-        RowLayout {
-            Layout.preferredWidth: parent.width
-
-            Label {
-                text: qsTr("Count points")
-            }
-            TextField {
-                id: countPoints
-                text: _measurement ? _measurement.pointsCount.toString() : "0"
-                validator: IntValidator { bottom: 1; top: 100000 }
-                onEditingFinished: {
-                    var value = parseInt(text)
-                    if (!isNaN(value) && value >= 1) {
-                        _measurement.pointsCount = value
-                    } else {
-                        text = _measurement ? _measurement.pointsCount.toString() : "0"
+                    onEditingFinished: {
+                        var value = parseFloat(text.replace(",", "."))
+                        if (!isNaN(value) && value >= 0) {
+                            _measurement.stopFreq = value * mhz
+                        } else {
+                            text = (_measurement ? _measurement.stopFreq / mhz : 0).toLocaleString(Qt.locale(), 'f', 2)
+                        }
                     }
                 }
             }
         }
 
-        RowLayout {
-            Layout.preferredWidth: parent.width
 
-            Label {
-                text: qsTr("Power")
-            }
-            TextField {
-                id: power
-                text: _measurement ? _measurement.outputPower.toString() : "0"
-                validator: DoubleValidator {
-                    bottom: -50;
-                    top: 20;
-                    decimals: 2
-                }
-                onEditingFinished: {
-                    var value = parseFloat(text.replace(",", "."))
-                    if (!isNaN(value)) {
-                        _measurement.outputPower = value
-                    } else {
-                        text = _measurement ? _measurement.outputPower.toString() : "0"
-                    }
-                }
-            }
+        Rectangle {
+            Layout.preferredHeight: 1
+            Layout.fillWidth: true
+            color: "#e0e0e0"
+            Layout.topMargin: 4
+            Layout.bottomMargin: 4
         }
 
-        RowLayout {
-            Layout.preferredWidth: parent.width
-
-            Label {
-                text: qsTr("Filter PCH")
-            }
-            TextField {
-                id: pch
-                text: _measurement ? _measurement.filterPch.toString() : "0"
-                validator: DoubleValidator { bottom: 10; top: 100000; decimals: 1 }
-                onEditingFinished: {
-                    var value = parseFloat(text.replace(",", "."))
-                    if (!isNaN(value) && value >= 10) {
-                        _measurement.filterPch = value
-                    } else {
-                        text = _measurement ? _measurement.filterPch.toString() : "0"
-                    }
-                }
-            }
-        }
 
         RowLayout {
             Layout.preferredWidth: parent.width
 
             Label {
-                text: qsTr("Trace format")
+                text: qsTr("Points count:")
+                width: labelWidth
+                Layout.alignment: Qt.AlignLeft
             }
-            ComboBox {
-                id: format
 
-                function updateIndexFromModel() {
-                    if (!_measurement || !_measurement.format) return
+            RowLayout {
+                Layout.alignment: Qt.AlignRight
 
-                    for (var i = 0; i < model.length; i++) {
-                        if (model[i].value === _measurement.format) {
-                            currentIndex = i
-                            break
+                TextField {
+                    id: countPoints
+
+                    implicitWidth: fieldWidth
+                    text: _measurement ? _measurement.pointsCount.toString() : "0"
+                    validator: IntValidator { bottom: 1; top: 100000 }
+                    onEditingFinished: {
+                        var value = parseInt(text)
+                        if (!isNaN(value) && value >= 1) {
+                            _measurement.pointsCount = value
+                        } else {
+                            text = _measurement ? _measurement.pointsCount.toString() : "0"
                         }
                     }
                 }
 
-                model: [
-                    { text: "Амп", value: "MLOG" },
-                    { text: "Фаза", value: "PHAS" }
-                ]
-                textRole: "text"
-                implicitWidth: 200
+                Label {
+                    Layout.preferredWidth: 30
+                    text: qsTr("")
+                }
+            }
+        }
 
-                onCurrentIndexChanged: {
-                    if (currentIndex >= 0 && _measurement) {
-                        _measurement.format = model[currentIndex].value
+        RowLayout {
+            Layout.preferredWidth: parent.width
+
+            Label {
+                text: qsTr("Output power:")
+                width: labelWidth
+                Layout.alignment: Qt.AlignLeft
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignRight
+
+                TextField {
+                    id: power
+
+                    implicitWidth: fieldWidth
+                    text: _measurement ? _measurement.outputPower.toString() : "0"
+                    validator: DoubleValidator { bottom: -50; top: 20; decimals: 2 }
+                    onEditingFinished: {
+                        var value = parseFloat(text.replace(",", "."))
+                        if (!isNaN(value)) {
+                            _measurement.outputPower = value
+                        } else {
+                            text = _measurement ? _measurement.outputPower.toString() : "0"
+                        }
                     }
                 }
+                Label {
+                    Layout.preferredWidth: 30
+                    text: qsTr("dBm")
+                }
+            }
+        }
 
-                Component.onCompleted: {
-                    updateIndexFromModel()
+        RowLayout {
+            Layout.preferredWidth: parent.width
+
+            Label {
+                text: qsTr("Filter PCH:")
+                width: labelWidth
+                Layout.alignment: Qt.AlignLeft
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignRight
+
+                TextField {
+                    id: pch
+
+                    implicitWidth: fieldWidth
+                    text: _measurement ? _measurement.filterPch.toString() : "0"
+                    validator: DoubleValidator { bottom: 10; top: 100000; decimals: 1 }
+                    onEditingFinished: {
+                        var value = parseFloat(text.replace(",", "."))
+                        if (!isNaN(value) && value >= 10) {
+                            _measurement.filterPch = value
+                        } else {
+                            text = _measurement ? _measurement.filterPch.toString() : "0"
+                        }
+                    }
+                }
+                Label {
+                    Layout.preferredWidth: 30
+                    text: qsTr("Hz")
+                }
+            }
+        }
+
+        RowLayout {
+            Layout.preferredWidth: parent.width
+
+            Label {
+                text: qsTr("Trace format:")
+                width: labelWidth
+                Layout.alignment: Qt.AlignLeft
+            }
+
+            RowLayout {
+                Layout.alignment: Qt.AlignRight
+
+                ComboBox {
+                    id: formatComboBox
+
+                    implicitWidth: fieldWidth
+                    model: [
+                        { text: "Амп", value: "MLOG" },
+                        { text: "Фаза", value: "PHAS" }
+                    ]
+                    textRole: "text"
+
+                    Component.onCompleted: updateIndexFromModel()
+
+                    function updateIndexFromModel() {
+                        if (!_measurement || !_measurement.format) return
+                        for (var i = 0; i < model.length; i++) {
+                            if (model[i].value === _measurement.format) {
+                                currentIndex = i
+                                break
+                            }
+                        }
+                    }
+
+                    onCurrentIndexChanged: {
+                        if (currentIndex >= 0 && _measurement) {
+                            _measurement.format = model[currentIndex].value
+                        }
+                    }
+                }
+                Label {
+                    Layout.preferredWidth: 30
+                    text: qsTr("")
                 }
             }
         }

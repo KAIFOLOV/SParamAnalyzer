@@ -4,23 +4,18 @@ import QtCharts
 import QtQuick.Layouts
 
 Window {
-    width: 640
-    height: 480
+    width: 1280
+    height: 720
     visible: true
     title: qsTr("S-Param Analyzer")
 
     RowLayout {
         ColumnLayout {
-            width: 400
+            width: 250
             spacing: 20
+            Layout.leftMargin: 20
 
             MeasurementMenu {}
-
-            Button {
-                text: "Debug menu"
-                width: 200
-                onClicked: debugController.showDebugMenu()
-            }
 
             Button {
                 id: startStopButton
@@ -34,7 +29,14 @@ Window {
                     }
                 }
             }
+
+            Button {
+                text: "Debug menu"
+                width: 200
+                onClicked: debugController.showDebugMenu()
+            }
         }
+
         ColumnLayout {
             Plotter {}
         }
