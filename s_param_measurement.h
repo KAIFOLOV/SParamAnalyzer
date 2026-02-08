@@ -4,6 +4,8 @@
 #include "IVna.h"
 
 #include <QPointF>
+#include <QPointer>
+#include <QSettings>
 
 class SParamMeasurement : public QObject
 {
@@ -17,9 +19,10 @@ public:
     Q_PROPERTY(int pointsCount READ pointsCount WRITE setPointsCount NOTIFY pointsCountChanged)
     Q_PROPERTY(float outputPower READ outputPower WRITE setOutputPower NOTIFY outputPowerChanged)
 
-    explicit SParamMeasurement(IVna *vna);
+    explicit SParamMeasurement(IVna *vna, QSettings *settings);
+    ~SParamMeasurement();
 
-    void preparation();
+    bool preparation();
     QVector<QPointF> startMeasure();
     void stop();
 
@@ -47,8 +50,13 @@ public:
     void setFormat(const QString &newFormat);
     Q_SIGNAL void formatChanged();
 
+    void saveSettings();
+    void loadSettings();
+
 private:
     IVna *_vna;
+
+    QPointer<QSettings> _settings;
 
     QString _format { "PHASE" };
     int _pointsCount { 50 };

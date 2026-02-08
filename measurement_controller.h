@@ -3,8 +3,9 @@
 
 #include "s_param_measurement.h"
 
-#include <QObject>
 #include <QTimer>
+#include <QObject>
+#include <QSettings>
 
 class MeasurementController : public QObject
 {
@@ -14,7 +15,7 @@ class MeasurementController : public QObject
     Q_PROPERTY(SParamMeasurement *measurement READ measurement NOTIFY measurementChanged FINAL)
 
 public:
-    explicit MeasurementController(IVna *vna, QObject *parent = nullptr);
+    explicit MeasurementController(IVna *vna, QSettings *settings, QObject *parent = nullptr);
 
     Q_SIGNAL void startManualTimer();
     Q_SIGNAL void newDataReady(const QVector<QPointF> &data, uint32_t id = 0);

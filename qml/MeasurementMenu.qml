@@ -40,16 +40,20 @@ GroupBox {
                     id: startFrequency
 
                     implicitWidth: fieldWidth
-                    text: (_measurement ? _measurement.startFreq / mhz : 0).toLocaleString(Qt.locale(), 'f', 2)
+                    text: displayText
+
+                    property string displayText: (_measurement ? (_measurement.startFreq / mhz).toFixed(0) : "0.00")
+
                     validator: DoubleValidator {
-                        bottom: 0; top: 1000000; decimals: 6
+                        bottom: 0;
+                        top: 1e6;
                     }
+
                     onEditingFinished: {
-                        var value = parseFloat(text.replace(",", "."))
+                        var value = parseFloat(text)
                         if (!isNaN(value) && value >= 0) {
                             _measurement.startFreq = value * mhz
-                        } else {
-                            text = (_measurement ? _measurement.startFreq / mhz : 0).toLocaleString(Qt.locale(), 'f', 2)
+                            displayText = value.toFixed(0)
                         }
                     }
                 }
@@ -70,16 +74,20 @@ GroupBox {
                     id: endFrequency
 
                     implicitWidth: fieldWidth
-                    text: (_measurement ? _measurement.stopFreq / mhz : 0).toLocaleString(Qt.locale(), 'f', 2)
+                    text: displayText
+
+                    property string displayText: (_measurement ? (_measurement.stopFreq / mhz).toFixed(0) : "0.00")
+
                     validator: DoubleValidator {
-                        bottom: 0; top: 1000000; decimals: 6
+                        bottom: 0;
+                        top: 1e6;
                     }
+
                     onEditingFinished: {
-                        var value = parseFloat(text.replace(",", "."))
+                        var value = parseFloat(text)
                         if (!isNaN(value) && value >= 0) {
                             _measurement.stopFreq = value * mhz
-                        } else {
-                            text = (_measurement ? _measurement.stopFreq / mhz : 0).toLocaleString(Qt.locale(), 'f', 2)
+                            displayText = value.toFixed(0)
                         }
                     }
                 }

@@ -7,6 +7,8 @@
 #include <QtConcurrent>
 #include <QFutureWatcher>
 
+constexpr double MHz = 1e6;
+
 template<typename T>
 static QVector<QPointF>
 makeChartFromFormatted(const QVector<T> &buffer, const double freqStart, const double freqStop)

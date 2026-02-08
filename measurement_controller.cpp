@@ -22,9 +22,9 @@ void longOperation(std::function<void()> func)
     future.waitForFinished();
 }
 
-MeasurementController::MeasurementController(IVna *vna, QObject *parent) :
+MeasurementController::MeasurementController(IVna *vna, QSettings *settings, QObject *parent) :
     QObject { parent },
-    _measurement(std::make_unique<SParamMeasurement>(vna))
+    _measurement(std::make_unique<SParamMeasurement>(vna, settings))
 {
     _continuousModeTimer.setInterval(100);
 
@@ -33,6 +33,11 @@ MeasurementController::MeasurementController(IVna *vna, QObject *parent) :
     });
 
     connect(&_continuousModeTimer, &QTimer::timeout, this, &MeasurementController::fetchData);
+
+    connect(vna, &IVna::error, this, [this](const QString &error) {
+        qWarning() << error;
+        stop();
+    });
 }
 
 void MeasurementController::start()
@@ -41,11 +46,12 @@ void MeasurementController::start()
         return;
 
     longOperation([this]() {
-        _measurement->preparation();
-        emit startManualTimer();
-    });
+        if (!_measurement->preparation())
+            return;
 
-    setIsRunning(true);
+        emit startManualTimer();
+        setIsRunning(true);
+    });
 }
 
 void MeasurementController::stop()
@@ -53,8 +59,8 @@ void MeasurementController::stop()
     if (!_isRunning)
         return;
 
-    _measurement->stop();
     _continuousModeTimer.stop();
+    _measurement->stop();
 
     setIsRunning(false);
 }

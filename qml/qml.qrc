@@ -3,5 +3,7 @@
         <file>Main.qml</file>
         <file>MeasurementMenu.qml</file>
         <file>Plotter.qml</file>
+        <file>VnaMenu.qml</file>
+        <file>ControlMenu.qml</file>
     </qresource>
 </RCC>

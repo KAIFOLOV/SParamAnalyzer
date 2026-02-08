@@ -5,22 +5,28 @@ import QtQuick.Layouts
 
 ChartView {
     id: chart
-    width: 500
-    height: 300
+
     antialiasing: true
 
     ValueAxis {
         id: axisX
         min: 0
-        max: 1
-        titleText: "Hz"
+        max: 100
+        titleText: "MHz"
     }
 
     ValueAxis {
         id: axisY
         min: 0
-        max: 1
+        max: 100
         titleText: "Db"
+    }
+
+    // Костыль, фиктивная серия, для отрисовки самого chartView
+    LineSeries {
+        visible: false
+        axisX: axisX
+        axisY: axisY
     }
 
     function recalcAxes() {

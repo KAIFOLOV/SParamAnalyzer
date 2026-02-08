@@ -6,6 +6,7 @@
 #include "measurement_controller.h"
 #include "debug/debug_controller.h"
 
+#include <QSettings>
 #include <QQmlApplicationEngine>
 
 class App
@@ -14,6 +15,8 @@ public:
     App(QQmlApplicationEngine &engine);
 
 private:
+    QPointer<QSettings> _settings;
+
     std::unique_ptr<IVna> _vna;
     std::unique_ptr<CurveModel> _model;
     std::unique_ptr<DebugController> _debugCtrl;

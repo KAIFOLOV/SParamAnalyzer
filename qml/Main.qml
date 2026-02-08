@@ -14,31 +14,18 @@ Window {
             width: 250
             spacing: 20
             Layout.leftMargin: 20
+            Layout.topMargin: 20
 
+            VnaMenu {}
             MeasurementMenu {}
-
-            Button {
-                id: startStopButton
-                text: measurementController.isRunning ? "Стоп" : "Старт"
-
-                onClicked: {
-                    if (measurementController.isRunning)
-                        measurementController.stop()
-                    else {
-                        measurementController.start()
-                    }
-                }
-            }
-
-            Button {
-                text: "Debug menu"
-                width: 200
-                onClicked: debugController.showDebugMenu()
-            }
+            ControlMenu {}
         }
 
         ColumnLayout {
-            Plotter {}
+            Plotter {
+                width: 900
+                height: 500
+            }
         }
     }
 }
