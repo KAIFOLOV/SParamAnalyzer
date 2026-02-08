@@ -224,8 +224,8 @@ GroupBox {
 
                     implicitWidth: fieldWidth
                     model: [
-                        { text: "Амп", value: "MLOG" },
-                        { text: "Фаза", value: "PHAS" }
+                        { text: "Amp", value: "MLOG" },
+                        { text: "Pha", value: "PHAS" }
                     ]
                     textRole: "text"
 

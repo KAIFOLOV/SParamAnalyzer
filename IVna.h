@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+/*!
+ * \brief Интерфейс для реализации управления векторником, потенциально выносится в отдельную dll
+ */
 class IVna : public QObject
 {
     Q_OBJECT

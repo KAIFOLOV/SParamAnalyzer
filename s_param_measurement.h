@@ -60,9 +60,9 @@ private:
 
     QString _format { "PHASE" };
     int _pointsCount { 50 };
-    double _stopFreq { 2000000000 };
-    double _startFreq { 1000000000 };
-    double _filterPch { 96812 };
+    double _stopFreq { 2000000000 }; // Hz
+    double _startFreq { 1000000000 }; // Hz
+    double _filterPch { 96812 }; // Hz
     float _outputPower { 10 };
 };
 

@@ -25,14 +25,11 @@ public:
 
     bool isRunning() const;
     void setIsRunning(bool newIsRunning);
+    Q_SIGNAL void isRunningChanged();
 
     SParamMeasurement *measurement() const;
     void setMeasurement(std::unique_ptr<SParamMeasurement> newMeasurement);
-
-signals:
-    void isRunningChanged();
-
-    void measurementChanged();
+    Q_SIGNAL void measurementChanged();
 
 private:
     void fetchData();

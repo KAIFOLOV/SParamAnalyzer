@@ -239,7 +239,6 @@ void DebugMenu::onQuery()
         return showError("Команда не задана");
 
     QByteArray result;
-    bool ok = _vna->query(cmd, result);
 
     _responseDisplay->setText(result);
 }
