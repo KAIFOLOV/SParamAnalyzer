@@ -13,7 +13,7 @@ GroupBox {
             id: startStopButton
 
             implicitWidth: 80
-            text: measurementController ? measurementController.isRunning ? "Стоп" : "Старт" : "Стоп"
+            text: measurementController ? measurementController.isRunning ? qsTr("Stop") : qsTr("Start") : qsTr("Stop")
 
             onClicked: {
                 if (measurementController.isRunning)
@@ -25,7 +25,7 @@ GroupBox {
         }
 
         Button {
-            text: "Debug vna"
+            text: qsTr("Debug vna")
             implicitWidth: 80
             onClicked: debugController.showDebugMenu()
         }

@@ -15,7 +15,7 @@ TcpVna::TcpVna() : _socket(new QTcpSocket(this))
 
 TcpVna::~TcpVna()
 {
-    disconnect();
+    TcpVna::disconnect();
 }
 
 void TcpVna::connect()
@@ -29,7 +29,7 @@ void TcpVna::connect()
 
 void TcpVna::disconnect()
 {
-    if (_socket && (isOpen() || _socket->state() == QTcpSocket::ConnectingState)) {
+    if (_socket && (TcpVna::isOpen() || _socket->state() == QTcpSocket::ConnectingState)) {
         _socket->disconnectFromHost();
         if (_socket->state() != QTcpSocket::UnconnectedState) {
             _socket->waitForDisconnected();
@@ -63,8 +63,10 @@ bool TcpVna::send(const QByteArray &command)
 
 bool TcpVna::query(const QByteArray &command, QByteArray &result)
 {
-    if (!isOpen())
+    if (!isOpen()) {
+        emit error("Vna not connected");
         return false;
+    }
 
     _buffer.clear();
 

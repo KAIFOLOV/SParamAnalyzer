@@ -19,7 +19,7 @@ GroupBox {
             Layout.preferredWidth: parent.width
 
             Label {
-                text: "IP:"
+                text: qsTr("IP:")
                 width: labelWidth
                 Layout.alignment: Qt.AlignLeft
             }
@@ -91,8 +91,8 @@ GroupBox {
             switch(status) {
             case IVna.Opened: statusIndicator.color = "green"; break;
             case IVna.Closed: statusIndicator.color = "red"; break;
-            case IVna.Wait:   statusIndicator.color = "yellow"; break;
-            default:          statusIndicator.color = "gray"; break;
+            case IVna.Wait: statusIndicator.color = "yellow"; break;
+            default: statusIndicator.color = "gray"; break;
             }
         }
     }

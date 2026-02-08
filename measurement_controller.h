@@ -38,7 +38,9 @@ private:
     void fetchData();
 
 private:
-    bool _isRunning;
+    bool _isRunning { false };
+    std::atomic<bool> _stopRequested { false };
+
     QTimer _continuousModeTimer;
 
     std::unique_ptr<SParamMeasurement> _measurement;
