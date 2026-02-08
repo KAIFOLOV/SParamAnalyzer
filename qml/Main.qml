@@ -4,8 +4,8 @@ import QtCharts
 import QtQuick.Layouts
 
 Window {
-    width: 1280
-    height: 720
+    width: 1200
+    height: 500
     visible: true
     title: qsTr("S-Param Analyzer")
 
@@ -14,7 +14,6 @@ Window {
             width: 250
             spacing: 20
             Layout.leftMargin: 20
-            Layout.topMargin: 20
 
             VnaMenu {}
             MeasurementMenu {}
